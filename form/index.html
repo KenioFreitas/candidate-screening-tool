@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oportunidade de Carreira — Mapeamento de Perfil</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    max-width: 560px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    background: #e2e8f0;
+    height: 6px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #2563eb, #0ea5e9);
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    color: #fff;
+    padding: 28px 32px 24px;
+  }
+  .card-header .step-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+  .card-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .card-header p {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-top: 6px;
+  }
+
+  .card-body { padding: 28px 32px 32px; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+
+  .option {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.4;
+    background: #fff;
+  }
+  .option:hover { border-color: #2563eb; background: #eff6ff; }
+  .option.selected { border-color: #2563eb; background: #eff6ff; color: #1e40af; }
+  .option .bullet {
+    width: 22px; height: 22px; min-width: 22px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #64748b;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .option.selected .bullet {
+    background: #2563eb; border-color: #2563eb; color: #fff;
+  }
+
+  /* Input fields */
+  .input-group { margin-top: 16px; }
+  .input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+  }
+  .input-group input {
+    width: 100%;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-group input:focus { border-color: #2563eb; }
+
+  /* Buttons */
+  .btn {
+    margin-top: 24px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Feedback toast between steps */
+  .feedback {
+    display: none;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #166534;
+    margin-top: 14px;
+    align-items: center;
+    gap: 8px;
+  }
+  .feedback.show { display: flex; }
+
+  /* Result screen */
+  .result { text-align: center; padding: 8px 0; }
+  .result .score-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-weight: 800;
+  }
+  .result .score-circle .pct { font-size: 30px; }
+  .result .score-circle .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+  .result h2 { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+  .result p { font-size: 14px; color: #475569; line-height: 1.6; }
+  .result .next-steps {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 20px;
+    text-align: left;
+    font-size: 13px;
+    color: #475569;
+  }
+  .result .next-steps strong { color: #1e293b; }
+
+  /* Util */
+  .hidden { display: none; }
+
+  @media (max-width: 480px) {
+    .card-header, .card-body { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+  <div class="card-header">
+    <div class="step-label" id="step-label">Etapa 1 de 4</div>
+    <h1 id="step-title">Oportunidade de Carreira</h1>
+    <p id="step-subtitle">Responda rapidamente — leva menos de 2 minutos.</p>
+  </div>
+
+  <div class="card-body">
+    <!-- STEP 1: Idade -->
+    <div id="step-1">
+      <div class="options" id="opts-1">
+        <div class="option" onclick="select(1,'menos de 21 anos','A')">
+          <span class="bullet">A</span> Menos de 21 anos
+        </div>
+        <div class="option" onclick="select(1,'entre 21 e 25 anos','B')">
+          <span class="bullet">B</span> Entre 21 e 25 anos
+        </div>
+        <div class="option" onclick="select(1,'entre 26 e 30 anos','C')">
+          <span class="bullet">C</span> Entre 26 e 30 anos
+        </div>
+        <div class="option" onclick="select(1,'entre 31 e 35 anos','D')">
+          <span class="bullet">D</span> Entre 31 e 35 anos
+        </div>
+        <div class="option" onclick="select(1,'acima de 36 anos','E')">
+          <span class="bullet">E</span> Acima de 36 anos
+        </div>
+      </div>
+      <div class="feedback" id="fb-1">✅ Ótimo! Você avançou para a próxima etapa.</div>
+      <button class="btn btn-primary" id="btn-1" onclick="next(1)" disabled>Continuar →</button>
+    </div>
+
+    <!-- STEP 2: Perfil -->
+    <div id="step-2" class="hidden">
+      <div class="options" id="opts-2">
+        <div class="option" onclick="select(2,'comunicativo','A')">
+          <span class="bullet">A</span> Gosto de falar muito, sou comunicativo e, se deixar, converso o dia todo
+        </div>
+        <div class="option" onclick="select(2,'executor','B')">
+          <span class="bullet">B</span> Sou orientado a execução — gosto de fazer o que me pedem com excelência
+        </div>
+        <div class="option" onclick="select(2,'ambicioso','C')">
+          <span class="bullet">C</span> Sou ambicioso e sei onde quero chegar — procuro evolução constante
+        </div>
+        <div class="option" onclick="select(2,'analitico','D')">
+          <span class="bullet">D</span> Tenho boa capacidade analítica e domínio de ferramentas de informática
+        </div>
+        <div class="option" onclick="select(2,'inovador','E')">
+          <span class="bullet">E</span> Sou orientado a inovação e questiono construtivamente processos que vejo desalinhados
+        </div>
+      </div>
+      <div class="feedback" id="fb-2">✅ Seu perfil foi identificado. Avançando...</div>
+      <button class="btn btn-primary" id="btn-2" onclick="next(2)" disabled>Continuar →</button>
+    </div>
+
+    <!-- STEP 3: Oportunidade -->
+    <div id="step-3" class="hidden">
+      <div class="options" id="opts-3">
+        <div class="option" onclick="select(3,'atendimento','A')">
+          <span class="bullet">A</span> Atendimento ao público — gosto de resolver, ajudar e criar conexão com pessoas
+        </div>
+        <div class="option" onclick="select(3,'caixa','B')">
+          <span class="bullet">B</span> Operações internas / Caixa — prefiro processos organizados e rotinas claras
+        </div>
+        <div class="option" onclick="select(3,'estrategia','C')">
+          <span class="bullet">C</span> Estratégia e metas — quero definir caminhos e acompanhar resultados
+        </div>
+        <div class="option" onclick="select(3,'analise','D')">
+          <span class="bullet">D</span> Análise de dados — meu ambiente é construir relatórios e identificar oportunidades em números
+        </div>
+      </div>
+      <div class="feedback" id="fb-3">✅ Excelente escolha! Preparando sua última etapa...</div>
+      <button class="btn btn-primary" id="btn-3" onclick="next(3)" disabled>Continuar →</button>
+    </div>
+
+    <!-- STEP 4: Certificação -->
+    <div id="step-4" class="hidden">
+      <div class="options" id="opts-4">
+        <div class="option" onclick="select(4,'cpa10','A')">
+          <span class="bullet">A</span> CPA-10
+        </div>
+        <div class="option" onclick="select(4,'cpa20','B')">
+          <span class="bullet">B</span> CPA-20
+        </div>
+        <div class="option" onclick="select(4,'cea','C')">
+          <span class="bullet">C</span> CEA
+        </div>
+        <div class="option" onclick="select(4,'nenhuma','D')">
+          <span class="bullet">D</span> Ainda não possuo certificação
+        </div>
+      </div>
+      <div class="feedback" id="fb-4">🎉 Parabéns! Você completou o mapeamento.</div>
+      <button class="btn btn-primary" id="btn-4" onclick="next(4)" disabled>Ver meu diagnóstico gratuito →</button>
+    </div>
+
+    <!-- STEP 5: Lead capture -->
+    <div id="step-5" class="hidden">
+      <p style="font-size:14px;color:#475569;margin-bottom:4px;">
+        Seu diagnóstico de perfil está pronto! Deixe seu contato para recebê-lo agora:
+      </p>
+      <div class="input-group">
+        <label>Seu nome</label>
+        <input type="text" id="inp-nome" placeholder="Como prefere ser chamado(a)?" oninput="checkLeads()">
+      </div>
+      <div class="input-group">
+        <label>E-mail</label>
+        <input type="email" id="inp-email" placeholder="seu@email.com" oninput="checkLeads()">
+      </div>
+      <div class="input-group">
+        <label>WhatsApp <span style="font-weight:400;color:#94a3b8">(opcional)</span></label>
+        <input type="tel" id="inp-phone" placeholder="(11) 99999-9999">
+      </div>
+      <button class="btn btn-primary" id="btn-5" onclick="showResult()" disabled>Receber diagnóstico →</button>
+    </div>
+
+    <!-- RESULT -->
+    <div id="step-result" class="hidden">
+      <div class="result">
+        <div class="score-circle" id="score-circle">
+          <span class="pct" id="score-pct">--</span>
+          <span class="label">aderência</span>
+        </div>
+        <h2 id="result-class">—</h2>
+        <p id="result-msg">—</p>
+        <div class="next-steps" id="next-steps"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── Scoring engine (mirror of scorer.py) ───────────────────────────────────
+const PESOS = { idade: 0.15, perfil: 0.25, oportunidade: 0.35, certificacao: 0.25 };
+
+const SCORES = {
+  idade: {
+    'menos de 21 anos': 0.30, 'entre 21 e 25 anos': 1.00,
+    'entre 26 e 30 anos': 0.70, 'entre 31 e 35 anos': 0.90, 'acima de 36 anos': 0.80,
+  },
+  perfil: {
+    'comunicativo': 1.00, 'executor': 0.80, 'ambicioso': 0.70,
+    'analitico': 0.40, 'inovador': 0.20,
+  },
+  oportunidade: {
+    'atendimento': 1.00, 'caixa': 0.70, 'estrategia': 0.40, 'analise': 0.10,
+  },
+  certificacao: {
+    'cpa20': 1.00, 'cpa10': 0.80, 'cea': 0.80, 'nenhuma': 0.20,
+  },
+};
+
+const CLASSES = [
+  [0.70, 'Alto Alinhamento', '#16a34a', '#dcfce7',
+   'Seu perfil está muito alinhado ao que buscamos. Nossa equipe entrará em contato nas próximas 48h para os próximos passos.'],
+  [0.50, 'Alinhamento Médio', '#d97706', '#fef3c7',
+   'Você tem bom potencial para o que buscamos. Vamos aprofundar essa conversa em breve.'],
+  [0.30, 'Alinhamento Parcial', '#dc2626', '#fee2e2',
+   'Seu perfil apresenta algumas divergências com o momento atual, mas manteremos seu contato para oportunidades futuras.'],
+  [0.00, 'Fora do Perfil Atual', '#64748b', '#f1f5f9',
+   'Neste momento não temos uma vaga que se encaixe ao seu perfil, mas você está em nossa base para futuras oportunidades.'],
+];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+const answers = {};
+const STEPS_META = [
+  { label: 'Etapa 1 de 4', title: 'Qual a sua idade?', sub: 'Selecione uma opção para continuar.' },
+  { label: 'Etapa 2 de 4', title: 'Como você se descreve?', sub: 'Escolha a opção que melhor representa você — sem pensar muito.' },
+  { label: 'Etapa 3 de 4', title: 'Qual oportunidade mais te atrai?', sub: 'Escolha a que mais te deixaria seguro(a) ou feliz.' },
+  { label: 'Etapa 4 de 4', title: 'Você possui certificação ANBIMA ativa?', sub: 'Selecione a mais alta que possui.' },
+  { label: 'Quase lá!', title: 'Receba seu diagnóstico gratuito', sub: 'Preencha abaixo para receber sua análise de perfil.' },
+];
+
+const KEYS = ['idade', 'perfil', 'oportunidade', 'certificacao'];
+
+function select(step, value, letter) {
+  const key = KEYS[step - 1];
+  answers[key] = value;
+
+  document.querySelectorAll(`#opts-${step} .option`).forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+
+  const fb = document.getElementById(`fb-${step}`);
+  fb.classList.add('show');
+
+  const btn = document.getElementById(`btn-${step}`);
+  btn.disabled = false;
+}
+
+function next(step) {
+  document.getElementById(`step-${step}`).classList.add('hidden');
+
+  const nextStep = step + 1;
+  const isLead = nextStep === 5;
+  const meta = STEPS_META[nextStep - 1];
+
+  document.getElementById('step-label').textContent = meta.label;
+  document.getElementById('step-title').textContent = meta.title;
+  document.getElementById('step-subtitle').textContent = meta.sub;
+
+  const progress = isLead ? 90 : (nextStep / 4) * 80;
+  document.getElementById('progress').style.width = progress + '%';
+
+  document.getElementById(`step-${nextStep}`).classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function checkLeads() {
+  const nome = document.getElementById('inp-nome').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  const valid = nome.length > 1 && email.includes('@');
+  document.getElementById('btn-5').disabled = !valid;
+}
+
+function calcScore() {
+  let score = 0;
+  for (const [dim, peso] of Object.entries(PESOS)) {
+    score += (SCORES[dim][answers[dim]] || 0.5) * peso;
+  }
+  return score;
+}
+
+function showResult() {
+  document.getElementById('step-5').classList.add('hidden');
+  document.getElementById('progress').style.width = '100%';
+
+  const score = calcScore();
+  const pct = Math.round(score * 100);
+
+  let cls, color, bg, msg;
+  for (const [min, label, c, b, m] of CLASSES) {
+    if (score >= min) { cls = label; color = c; bg = b; msg = m; break; }
+  }
+
+  const circle = document.getElementById('score-circle');
+  circle.style.background = bg;
+  circle.style.border = `4px solid ${color}`;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').style.color = color;
+  document.getElementById('result-class').textContent = cls;
+  document.getElementById('result-class').style.color = color;
+  document.getElementById('result-msg').textContent = msg;
+
+  const nome = document.getElementById('inp-nome').value.trim().split(' ')[0];
+  document.getElementById('step-label').textContent = 'Seu Diagnóstico';
+  document.getElementById('step-title').textContent = `Olá, ${nome}!`;
+  document.getElementById('step-subtitle').textContent = 'Confira abaixo o resultado do seu mapeamento de perfil.';
+
+  const nextEl = document.getElementById('next-steps');
+  if (score >= 0.70) {
+    nextEl.innerHTML = `<strong>Próximos passos:</strong><br>Nossa equipe analisará seu perfil e entrará em contato em até 48h pelo e-mail ou WhatsApp cadastrado. Fique de olho na sua caixa de entrada!`;
+  } else if (score >= 0.50) {
+    nextEl.innerHTML = `<strong>Próximos passos:</strong><br>Seu perfil ficará em nossa base ativa. Se surgir uma oportunidade alinhada ao seu momento, você será o(a) primeiro(a) a saber.`;
+  } else {
+    nextEl.innerHTML = `<strong>Obrigado pela participação!</strong><br>Seu perfil ficou registrado em nossa base. Continuaremos divulgando oportunidades que possam fazer mais sentido para o seu momento de carreira.`;
+  }
+
+  document.getElementById('step-result').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
