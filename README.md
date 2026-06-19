@@ -1,4 +1,4 @@
-# Candidate Screening Tool — Triagem Inteligente por Aderência de Perfil
+# Candidate Screening Tool: Triagem Inteligente por Aderência de Perfil
 
 > **Problema:** No mercado atual, candidatar-se a uma vaga virou commodity. As pessoas se inscrevem em dezenas de vagas por dia e desistem ao primeiro sinal de formulário longo. Como triamos candidatos com precisão sem afugentá-los antes mesmo da primeira conversa?
 
