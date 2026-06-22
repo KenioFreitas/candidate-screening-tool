@@ -8,7 +8,7 @@
 
 ## O Problema Real
 
-Durante um período de **expansão acelerada no setor bancário**, precisávamos contratar dezenas de profissionais para atendimento ao público em curto prazo. Os desafios eram:
+Durante um período de **expansão acelerada no setor bancário**, precisávamos contratar centenas de profissionais em curto prazo. Os desafios eram:
 
 - Alto volume de inscrições com perfis muito díspares
 - Tempo escasso dos gestores para triagem manual
